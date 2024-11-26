@@ -1,0 +1,665 @@
+----------------SEARCH BY NAME, PRODUCT NAME,CATEGORY NAME,SUBCATEGORY NAME,SUPPLIER NAME-------------------------
+
+1] GET-- http://localhost:5000/api/admin/products/subcategory/lg
+2] GET-- http://localhost:5000/api/admin/products/category/Electronics
+3] GET-- http://localhost:5000/api/admin/products/name/tape    
+4] GET-- http://localhost:5000/api/admin/suppliers/search/name?name=ramesh
+
+
+=================================================
+(change remove admin slash)
+
+You
+12:05 PM
+http://localhost:5000/admin/products-name
+Veena Hatti
+12:05 PM
+-/api/products?q=
+
+-/api/products?q=
+/api/supplier?q=
+-----------------------
+Product :-/api/products?q=-------DONE
+Supplier:-/api/supplier?q=
+ItemCode:-api/itemcode?q=
+Category :- api./category?q=
+
+
+
+================done=========
+1]    Global:/ap/search?q=
+2]    api--banner,category name,category image,suppliername and logo,----get
+
+Add banner: /api/admin/banner
+Get banner:/api/admin/banner,   bannerImage,category name,category image,suppliername and logo,
+
+3] http://localhost:5000/api/products   for all products
+
+SEARCH BY NAME---------> http://localhost:5000/api/products/search/q?q=tape&page=1&limit=10
+
+4] =======PRODUCTS SEARCH BY ITEMCODE IN PRODUCTS TABLE============
+
+http://localhost:5000/api/products/search/q?q=3M983-7112
+
+
+5]===========CATEGORY SEARCH BY NAME IN CATEGORY TABLE============
+
+http://localhost:5000/api/category/search?q=tape
+
+6]=============SUPPLIER SEARCH BY NAME IN SUPPLIER TABLE============
+
+http://localhost:5000/api/suppliers/search/q?q=abc
+
+
+--------------------------------SEARCH GLOBALY--------------------------------------------------------------------------
+
+I have 4 table,  products,category,subcategory,supplier. If i search by 'lux' name then should be come all 'lux' name if it is availbale any table. reference populate all tables.
+
+5] GET-- http://localhost:5000/api/admin/search?q=rame
+         http://localhost:5000/api/admin/search?q=Ramesh
+
+         http://localhost:5000/api/admin/search?q=TEST&page=3
+
+         http://localhost:5000/api/admin/search?searchParams=FIRE
+
+-------------------------------- 
+
+         changed new--->  http://localhost:5000/api/search?q=FIRE
+
+------------------------------CATEGORIES-----------------------------------------------------------------------
+
+6] POST---  http://localhost:5000/api/admin/cat/categories
+
+{
+    "name": "Maths"
+}
+7] GET-- http://localhost:5000/api/admin/cat/categories
+
+8] GET BY ID---  http://localhost:5000/api/admin/cat/categories/67319e8e10d70efbb060b5f5
+
+9] PUT--- http://localhost:5000/api/admin/cat/categories/6731c1aa3bc2ed7782feb5a2
+
+{"name": "Mathmathics" }
+success
+
+9-1] DELETE--- http://localhost:5000/api/admin/cat/categories/6731c1aa3bc2ed7782feb5a2
+success
+
+
+
+
+-----------------------------SUB CATEGORIES-----------------------------------------------------------------
+
+
+10] post--- http://localhost:5000/api/admin/sub/categories/6731c1aa3bc2ed7782feb5a2/subcategories/
+
+
+{
+    "name": "Lg c",
+    "description": "Lg brand under Electronics category"
+}
+-------------
+11] get---  http://localhost:5000/api/admin/sub/categories/6732025eabb44292e782ecc6/subcategories/
+
+                        
+12] put---- http://localhost:5000/api/admin/sub/subcategories/:subcategoryId
+            http://localhost:5000/api/admin/sub/subcategories/6731cd80451471e91021eb77
+
+{
+    "name": "Lg cO",
+    "description": "Lg brand under Electronics category"
+}
+
+Updated successfull
+
+12-1] getAll--- http://localhost:5000/api/admin/sub/subcategories/
+12-2] delete--- http://localhost:5000/api/admin/sub/subcategories/:subcategoryId
+
+
+
+
+
+======================================API Documentation=========================================
+
+
+*******************************************[1] SIGNUP & LOGIN**********************************
+
+Add User (Signup)
+
+1] POST http://localhost:5000/api/admin/users/
+Request Body:
+
+{
+  "email": "shuklakaap@gmail.com",
+  "password": "Shukla@123"
+}
+-new--------
+{
+    "username": "krish",
+    "role": "guest",
+    "email": "shuklakajp@gmail.com",
+    "password": "Shukla@123",
+    "phoneNumber": "971 55568329"
+}
+Response:
+
+{
+  "message": "shuklakaap@gmail.com  added successfully.
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmUyOWM4Y2JjMmU5NWIwZTNjYjM1YSIsImlhdCI6MTczMTA3ODYwMCwiZXhwIjoxNzMxMDgyMjAwfQ.jKq968WX8ywyAhqEF-AGfO0WaUKGSCt2fM2ymEYliio"
+}
+
+
+2] Admin Login
+POST http://localhost:5000/api/admin/login
+
+Request Body:
+
+{
+  "email": "shuklakaa@gmail.com",
+  "password": "Shukla@123"
+}
+Response: "login successful"
+
+
+3] Get All Users
+GET http://localhost:5000/api/admin/users/
+
+Response:
+
+{
+  "users": [
+    {
+      "_id": "672c53826a0d854d6f46bbcb",
+      "email": "shuklaaaa@gmail.com",
+      "__v": 0
+    }
+  ]
+}
+
+
+Filter Users
+
+4] Filter by Email (case-insensitive):
+GET http://localhost:5000/api/admin/users?email=test
+
+
+Sort Users by Email:
+5] Sort Ascending: GET http://localhost:5000/api/admin/users?sortBy=email:asc
+6] Sort Descending: GET http://localhost:5000/api/users?sortBy=email:desc
+
+7] Update User
+Endpoint: PUT http://localhost:5000/api/admin/users/672db66726ac5feb54a136af
+
+
+Request Body: (inside request body we can use one fieled or more field for upadting)
+
+{
+  "email": "shuklaprasad@gmail.com",
+  "password": "Shuklp@123"
+}
+
+7-1] Delete user
+DELETE---     http://localhost:5000/api/admin/users/673347f8830fb8d2ce76f687
+
+{"message":"User deleted successfully"}
+
+
+*******************************************[2] SUPPLIER*******************************************
+
+8] Create Supplier
+
+POST http://localhost:5000/api/admin/suppliers  
+
+Request Body:
+
+{
+  "name": "Supplier Name",--
+  "officeAddress": "Address hhh",--
+  "contactNumber": "125 45678890",---
+  "email": "supplierr@example.com",----
+  "productCategories": [
+    "Category1",
+    "Category2"
+  ],
+   "productSubCategories": [
+    "subCategory1",
+    "subCategory2"
+  ],
+}
+Response: "message": "Supplier created successfully"
+
+or--->
+{"name": "Supplier Ramesh","officeAddress": "Address Lko","contactNumber": "125 45678890","email": "Rames@example.com","productCategories": ["electric1","soap1"],"productSubCategories": ["wire1","Lux1"],"products":"item1"}
+
+or
+
+{"name": "Supplier Ramesh","officeAddress": "Address Lko","contactNumber": "125 45678890","email": "Rame@example.com","productCategories": "6732d7aaa60ec30ee004cb26","productSubCategories": "67320292abb44292e782ecca","products":"6732d7aa3fe6bf8338eed908"}
+
+======================
+
+INSERT SUPPLIER--
+
+-------------------CREATE SUPPLIER
+POST http://localhost:5000/api/admin/suppliers  
+
+Request Body:
+
+{
+  "name": "Hitech Supplier",
+  "officeAddress": "Mumbai city",
+  "contactNumber": "125 45678890",
+  "email": "hitech@test.com",
+  "companyName": "ABC Electronics",
+  "companyType": "Electronics Manufacturing",
+  "companyLogo": "https://www.shutterstock.com/image-photo/bangkok-august-1-tata-logo-260nw-305742368.jpg"
+}
+---------------------------insert supplier-----------------
+POST--- http://localhost:5000/api/admin/suppliers/suppliers
+
+{
+  "name": "zzz Trader",
+  "officeAddress": "201-42, Kate Business Center, Al Bustan Building, Al Sadd, Doha, Qatar.",
+  "contactNumber": "125 45678890",
+  "email": "infojk@bigtrader.biz",
+  "companyName": "BigTrader Technologies LLC",
+  "companyType": "BigTrader",
+  "companyLogo": "http://192.168.1.202:5000/images/bigtrader.png"
+}
+
+-------response---if you want add category product or subcategory u can add
+{
+    "message": "Supplier created successfully",
+    "supplier": {
+        "name": "zzz Trader",
+        "email": "infojk@bigtrader.biz",
+        "companyName": "BigTrader Technologies LLC",
+        "companyType": "BigTrader",
+        "companyLogo": "http://192.168.1.202:5000/images/bigtrader.png",
+        "officeAddress": "201-42, Kate Business Center, Al Bustan Building, Al Sadd, Doha, Qatar.",
+        "contactNumber": "125 45678890",
+        "productCategories": [],
+        "productSubCategories": [],
+        "products": [],
+        "_id": "673ef78a083b782f45f5c2cc",
+        "createdAt": "2024-11-21T09:04:10.740Z",
+        "updatedAt": "2024-11-21T09:04:10.740Z",
+        "__v": 0,
+        "id": "673ef78a083b782f45f5c2cc"
+    }
+}
+=============================================================================
+9] Update Supplier
+
+Endpoint: PUT http://localhost:5000/api/admin/suppliers/672c77b9786ebe9d512f39d2
+Request Body:
+
+{
+  "name": "Supplier Name",
+  "officeAddress": "Address hhh",
+  "contactNumber": "125 45678890",
+  "email": "supplierr@example.com",
+  "productCategories": [
+    "Category1",
+    "Category2"
+  ],
+   "productSubCategories": [
+    "subCategory1",
+    "subCategory2"
+  ],
+}
+Response: "message": "Supplier updated successfully"
+
+
+10] Get Supplier by ID
+
+Endpoint: GET http://localhost:5000/api/admin/suppliers/672c77b9786ebe9d512f39d2
+
+11] Get All Suppliers
+Endpoint: GET http://localhost:5000/api/admin/suppliers/
+
+
+
+-----------------Search Suppliers by Name---------------------------------------
+
+11-1]
+Endpoint: GET http://localhost:5000/api/admin/suppliers/search/name?name=big
+
+GO TO NEXT PAGE--   http://localhost:5000/api/admin/suppliers/search/name?name=big&page=1
+
+http://localhost:5000/api/admin/suppliers/search/name?name=big&page=1&limit=3 (if you want show 3 item in 1 page)
+
+
+Pagination for Suppliers
+
+Endpoint: GET http://localhost:5000/api/admin/suppliers?page={pageNumber}
+Example: GET http://localhost:5000/api/admin/suppliers?page=1
+
+---------------------------------------------------------------------------------------------
+12] Delete Supplier
+
+DELETE http://localhost:5000/api/suppliers/672c77b9786ebe9d512f39d2
+
+
+***********************************[3] PRODUCT SEARCH BY PRODUCT NAME***********************************
+
+
+Search Product by Name
+
+Endpoint: GET http://localhost:5000/api/admin/products/name/{productName}
+Example: GET http://localhost:5000/api/admin/products/name/DIGITAL SOUND LEVEL METER
+Response:
+
+{
+  "products": [
+    {
+      "_id": "672caf75c555e9d7133f34c6",
+      "name": "DIGITAL SOUND LEVEL METER",
+      "code": "407730",
+      "unit": "NOS",
+      "group": "TEST&MEASUREMENT",
+      "brand": "EXTECH",
+      "description": "abc",
+      "supplierId": "672cacf22c74463788391d09",
+      "__v": 0
+    }
+  ]
+}
+---------------------------------------------------------------------------------------
+[3 - 1]        PRODUCT SEARCH BY CATEGORY NAME
+GET---  http://localhost:5000/api/admin/products/category/TEST&MEASUREMENT
+
+or    GET http://localhost:5000/api/admin/products/category/Electronics?page=1&limit=5    (pagination)
+
+---------------------------------------------------------------------------------------
+[3 - 2]       PRODUCT SEARCH BY SUB CATEGORY NAME
+GET---  http://localhost:5000/api/admin/products/subcategory/extech
+
+13]   [3 - 3]    ALL CATEGORIES LIST
+http://localhost:5000/api/admin/products/cat/categories
+
+{"categories":["Electronics","TEST&MEASUREMENT "]}
+
+14]   [3 - 4]    ALL SUB-CATEGORIES LIST
+http://localhost:5000/api/admin/products/sub/subcategories
+{
+  "subCategories": [
+    "EXTECH",
+    "Mobile"
+  ]
+}
+
+---------------------------------------------------------------------------------------
+Search Products with Limited Fields
+Request:
+
+{
+  "products": [
+    {
+      "_id": "672caf75c555e9d7133f34c6",
+      "name": "DIGITAL SOUND LEVEL METER",
+      "supplierId": "672cacf22c74463788391d09"
+    }
+  ]
+}
+
+
+*************************************[4] PRODUCT UPLOAD by Supplier ID********************************
+
+15] Bulk Upload Products
+Endpoint: POST http://localhost:5000/api/admin/products/bulk-upload/{supplierId}
+
+http://localhost:5000/api/admin/admin/products/bulk-upload/673af12f8f4125575ce3663f
+
+Example: POST http://localhost:5000/api/admin/products/bulk-upload/672cacf22c74463788391d09
+Request Body:
+
+Use form-data and choose an excelFile for uploading.   key--- excelFile,   value---- choose excel file(excell.xlsx)
+Response:
+
+{
+  "message": "Products uploaded successfully."
+}
+
+16] [4-1]  SINGLE PRODUCT UPLOAD BY SUPPLIER ID THROUGH POSTMAN
+
+http://localhost:5000/api/admin/products
+
+{
+    "ProductName": "Smartphone X100",
+    "ItemCode": "X100-002",
+    "Unit": "Piece",
+    "Description": "A high-end smartphone.",
+    "Category": {
+        "CategoryID": "6732d7aaa60ec30ee004cb2a",
+        "CategoryName": "water"
+    },
+    "SubCategory": {
+        "SubCategoryID": "6732d7aaa60ec30ee004cb2c",
+        "SubCategoryName": "Kinley",
+        "CategoryID": "60b8d6e34f1a2a3d64b6f6d7"
+    },
+   "supplierId": "6732dd6ee08f137a834ad99d"
+}
+
+
+  "message": "Product created successfully",
+
+
+----------------------------------------------------------------------
+17] Get All Products
+Endpoint: GET http://localhost:5000/api/admin/products/
+
+
+18] Get Product by ID
+Endpoint: GET http://localhost:5000/api/admin/products/{productId}
+
+
+19] Update Product
+Endpoint: PUT http://localhost:5000/api/admin/products/{productId}
+              http://localhost:5000/api/admin/products/67330f18b50bb468c3ef4782
+Request Body:
+{
+  "ProductName": "Smartphone Y100"
+}
+
+Response:
+
+{
+  "message": "Product updated successfully",
+  "product": {
+    "Category": {
+      "CategoryID": "6732d7aaa60ec30ee004cb2a",
+      "CategoryName": "water"
+    },
+    "SubCategory": {
+      "SubCategoryID": "6732d7aaa60ec30ee004cb2c",
+      "SubCategoryName": "Kinley",
+      "CategoryID": "60b8d6e34f1a2a3d64b6f6d7"
+    },
+    "_id": "67330f18b50bb468c3ef4782",
+    "ProductName": "Smartphone Y100",
+    "ItemCode": "X100-002",
+    "Unit": "Piece",
+    "Description": "A high-end smartphone.",
+    "supplierId": "6732dd6ee08f137a834ad99d",
+    "createdAt": "2024-11-12T08:17:28.082Z",
+    "updatedAt": "2024-11-12T08:34:02.248Z",
+    "__v": 0
+  }
+}
+
+
+Delete Product
+20] Endpoint: DELETE http://localhost:5000/api/admin/products/{productId}
+
+**********************************************************************************************************
+
+--------21]------------------globally search--------------------------
+
+GET---http://localhost:5000/api/admin/search?searchParams=extech
+
+      http://localhost:5000/api/admin/search?searchParams=FIRE
+
+
+-----------22]---------------Add client----------------------------
+
+POST--- http://localhost:5000/api/admin/clients
+
+{
+  "name": "Krishna Shukla",
+  "companyName": "Big Trader",
+  "phoneNo": "+974 45678980",
+  "email": "krishn@gmail.com",
+  "productCode":"123",
+  "supplierCode":"1234"
+}
+
+OR new
+
+{
+  "name": "Tata ",
+  "companyName": "Tata Enterprises",
+  "phoneNo": "+974 18345678",
+  "email": "moto@example.com",
+  "product": "673af289148250761b1386ff",
+  "subCategory": "673af28f148250761b138fde",
+  "supplier": "673d8b7334cd7dbe83304ea9"
+}
+
+response---
+
+{
+    "_id": "673db28d1b891637e77cb1dd",
+    "name": "Tata ",
+    "companyName": "Tata Enterprises",
+    "phoneNo": "+974 18345678",
+    "email": "moto@example.com",
+    "product": {
+        "_id": "673af289148250761b1386ff",
+        "ItemCode": "AN100"
+    },
+    "subCategory": "673af28f148250761b138fde",
+    "supplier": "673d8b7334cd7dbe83304ea9",
+    "createdAt": "2024-11-20T09:57:33.581Z",
+    "updatedAt": "2024-11-20T09:57:33.581Z",
+    "__v": 0
+}
+
+-----------23]----------------------------------------------------
+GET--- http://localhost:5000/api/admin/clients
+
+------------24]--------------category----------------------------
+
+POST---  http://localhost:5000/api/admin/cat/category
+
+{
+  "name": "Electronics",
+  "description": "Devices and gadgets",
+  "imagePath": "https://img.freepik.com/premium-photo/collection-electronic-devices-including-laptop-phone-ipod_1065421-12202.jpg?semt=ais_hybrid",
+  "subCategoryId": "673af289148250761b1386f8",
+  "supplierId": "673c3296d7d2c4af0794f713"
+}
+
+{
+    "name": "Electronics",
+    "description": "Devices and gadgets",
+    "imagePath": "https://img.freepik.com/premium-photo/collection-electronic-devices-including-laptop-phone-ipod_1065421-12202.jpg?semt=ais_hybrid",
+    "subCategoryId": [
+        "673af289148250761b1386f8"
+    ],
+    "supplierId": "673c3296d7d2c4af0794f713",
+    "_id": "673c710879cadb4a82b7c2fc",
+    "createdAt": "2024-11-19T11:05:44.086Z",
+    "updatedAt": "2024-11-19T11:05:44.086Z",
+    "__v": 0
+}
+
+-------25]-----------------------------------------------------
+GET--- http://localhost:5000/api/admin/cat/category
+  {
+    "_id": "673c710879cadb4a82b7c2fc",
+    "name": "Electronics",
+    "imagePath": "https://img.freepik.com/premium-photo/collection-electronic-devices-including-laptop-phone-ipod_1065421-12202.jpg?semt=ais_hybrid"
+  }
+
+-------26]-------------------supplier--------------------------
+
+POST--- http://localhost:5000/api/admin/suppliers/suppliers
+
+{
+  "name": "ABC Suppliers",
+  "email": "abc@suppliers.com",
+  "companyName": "ABC Electronics",
+  "companyType": "Electronics Manufacturing",
+  "companyLogo": "https://www.shutterstock.com/image-photo/bangkok-august-1-tata-logo-260nw-305742368.jpg",
+  "officeAddress": "123 ABC Street, Mumbai, India",
+  "contactNumber": "123 98765432"
+}
+---
+{
+    "name": "ABC Suppliers",
+    "email": "abc@suppliers.com",
+    "companyName": "ABC Electronics",
+    "companyType": "Electronics Manufacturing",
+    "companyLogo": "https://www.shutterstock.com/image-photo/bangkok-august-1-tata-logo-260nw-305742368.jpg",
+    "officeAddress": "123 ABC Street, Mumbai, India",
+    "contactNumber": "123 98765432",
+    "productCategories": [],
+    "productSubCategories": [],
+    "products": [],
+    "_id": "673c77b1166e527d1f44c375",
+    "createdAt": "2024-11-19T17:04:09.229Z",
+    "updatedAt": "2024-11-19T17:04:09.229Z",
+    "__v": 0,
+    "id": "673c77b1166e527d1f44c375"
+}
+---------27]-------------------------------------------------
+
+GET--- http://localhost:5000/api/admin/suppliers/name/logo
+
+"_id": "673c77b1166e527d1f44c375",
+    "companyName": "ABC Electronics",
+    "companyType": "Electronics Manufacturing",
+    "companyLogo": "https://www.shutterstock.com/image-photo/bangkok-august-1-tata-logo-260nw-305742368.jpg",
+
+----------28]-----------clientHistory-----------------------------------------------
+or    ----{{url}}/{{context-path}}/clientHistory/673b1e83ad4571b601f88baf
+
+POST--- localhost:5000/api/admin/clientHistory/add
+
+{
+  "clientId": "673b1e83ad4571b601f88baf",
+  "enquiryStatus": "Pending"
+}
+
+GET--- localhost:5000/api/admin/clientHistory/673b1e83ad4571b601f88baf      (clientId-- 673b1e83ad4571b601f88baf)
+
+{
+  "message": "Client history fetched successfully",
+  "history": [
+    {
+      "_id": "673d7fff719b9e0ceefa36d6",
+      "clientId": {
+        "_id": "673b1e83ad4571b601f88baf",
+        "name": "Krishna Shukla",
+        "email": "krishna@gmail.com"
+      },
+      "enquiryStatus": "Pending",
+      "createdAt": "2024-11-20T06:21:51.044Z",
+      "updatedAt": "2024-11-20T06:21:51.044Z",
+      "__v": 0
+    }
+  ]
+}
+====================
+========================ADD BANNER==================
+POST----localhost:5000/api/admin/banner
+
+
+{
+  "bannerImage": "http://192.168.1.202:5000/images/bannerImage/LaptopImage.png",
+  "categoryId": "673ee2c8c50a2481986b0ea2",  // Category ID
+  "supplierId": "673c77b1166e527d1f44c375"   // Supplier ID
+}
+
+GET-- localhost:5000/api/admin/banner

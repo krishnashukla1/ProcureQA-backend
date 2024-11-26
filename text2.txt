@@ -1,0 +1,248 @@
+1] -------------------GLOBALLY SEARCH
+
+GET---- http://localhost:5000/api/admin/search?searchParams=FIRE
+        http://localhost:5000/api/admin/search?searchParams=FIRE&page=3
+        http://localhost:5000/api/admin/search?searchParams=extech
+
+
+
+2] -------------------GET ALL CATEGORY LIST
+http://localhost:5000/api/admin/cat/categories
+
+----------------------GET ALL CATEGORY LIST WITH NAME AND IMAGEPATH   with pagination
+http://localhost:5000/api/admin/cat/category
+
+3] -------------------GET ALL SUBCATEGORY LIST
+http://localhost:5000/api/admin/sub/subcategories/
+
+4] -------------------GET ALL Users
+http://localhost:5000/api/admin/users/
+
+
+5] -------------------CREATE SUPPLIER
+POST http://localhost:5000/api/admin/suppliers  
+
+Request Body:
+
+{
+  "name": "Hitech Supplier",
+  "officeAddress": "Mumbai city",
+  "contactNumber": "125 45678890",
+  "email": "hitech@test.com",
+  "companyName": "ABC Electronics",
+  "companyType": "Electronics Manufacturing",
+  "companyLogo": "https://www.shutterstock.com/image-photo/bangkok-august-1-tata-logo-260nw-305742368.jpg"
+}
+---------------------------insert supplier-----------------
+POST--- http://localhost:5000/api/admin/suppliers/suppliers
+
+{
+  "name": "zzz Trader",
+  "officeAddress": "201-42, Kate Business Center, Al Bustan Building, Al Sadd, Doha, Qatar.",
+  "contactNumber": "125 45678890",
+  "email": "infojk@bigtrader.biz",
+  "companyName": "BigTrader Technologies LLC",
+  "companyType": "BigTrader",
+  "companyLogo": "http://192.168.1.202:5000/images/bigtrader.png"
+}
+--------response---if you want add category product or subcategory u can add
+{
+    "message": "Supplier created successfully",
+    "supplier": {
+        "name": "zzz Trader",
+        "email": "infojk@bigtrader.biz",
+        "companyName": "BigTrader Technologies LLC",
+        "companyType": "BigTrader",
+        "companyLogo": "http://192.168.1.202:5000/images/bigtrader.png",
+        "officeAddress": "201-42, Kate Business Center, Al Bustan Building, Al Sadd, Doha, Qatar.",
+        "contactNumber": "125 45678890",
+        "productCategories": [],
+        "productSubCategories": [],
+        "products": [],
+        "_id": "673ef78a083b782f45f5c2cc",
+        "createdAt": "2024-11-21T09:04:10.740Z",
+        "updatedAt": "2024-11-21T09:04:10.740Z",
+        "__v": 0,
+        "id": "673ef78a083b782f45f5c2cc"
+    }
+}
+
+6] -------------------GET ALL SUPPLIER
+http://localhost:5000/api/admin/suppliers/
+
+7] -------------------GET SUPPLIER BY NAME
+http://localhost:5000/api/admin/suppliers/search/name?name=big
+
+8] -------------------GET SUPPLIER WITH logo  (ONLY DISPLAY COMPANY NAME,COMPANY TYPE AND LOGO)
+http://localhost:5000/api/admin/suppliers/name/logo
+http://localhost:5000/api/admin/suppliers/name/logo?page=1
+
+9] -------------------PRODUCT UPLOAD BY SUPPLIER ID
+http://localhost:5000/api/admin/products/bulk-upload/673d66a6417e05b6cb36cefb
+
+
+10] -------------------GET ALL PRODUCT
+http://localhost:5000/api/admin/products/
+
+11] -------------------GET ALL CLIENTS
+http://localhost:5000/api/admin/clients
+
+12] -------------------clientHistory-----------------------------------------------
+or-          {{url}}/{{context-path}}/clientHistory/673b1e83ad4571b601f88baf
+
+POST--- localhost:5000/api/admin/clientHistory/add
+
+{
+  "clientId": "673b1e83ad4571b601f88baf",
+  "enquiryStatus": "Pending"
+}
+
+GET--- localhost:5000/api/admin/clientHistory/673b1e83ad4571b601f88baf      (clientId-- 673b1e83ad4571b601f88baf)
+
+{
+  "message": "Client history fetched successfully",
+  "history": [
+    {
+      "_id": "673d7fff719b9e0ceefa36d6",
+      "clientId": {
+        "_id": "673b1e83ad4571b601f88baf",
+        "name": "Krishna Shukla",
+        "email": "krishna@gmail.com"
+      },
+      "enquiryStatus": "Pending",
+      "createdAt": "2024-11-20T06:21:51.044Z",
+      "updatedAt": "2024-11-20T06:21:51.044Z",
+      "__v": 0
+    }
+  ]
+}
+
+13]-----------------CREATE CLIENT AND GET ALL CLIENT--------
+
+
+
+
+POST/GET--- http://localhost:5000/api/admin/clients
+
+{
+  "name": "Tata ",
+  "companyName": "Tata Enterprises",
+  "phoneNo": "+974 18345678",
+  "email": "moto@example.com",
+  "product": "673af289148250761b1386ff",
+  "subCategory": "673af28f148250761b138fde",
+  "supplier": "673d8b7334cd7dbe83304ea9",
+  message---"text"
+}
+
+response---
+
+{
+    "_id": "673db28d1b891637e77cb1dd",
+    "name": "Tata ",
+    "companyName": "Tata Enterprises",
+    "phoneNo": "+974 18345678",
+    "email": "moto@example.com",
+    "product": {
+        "_id": "673af289148250761b1386ff",
+        "ItemCode": "AN100"
+    },
+    "subCategory": "673af28f148250761b138fde",
+    "supplier": "673d8b7334cd7dbe83304ea9",
+    "createdAt": "2024-11-20T09:57:33.581Z",
+    "updatedAt": "2024-11-20T09:57:33.581Z",
+    "__v": 0
+}
+
+14]-----------------CREATE Category AND GET ALL category--------
+
+POST-- http://localhost:5000/api/admin/cat/category
+GET--  http://localhost:5000/api/admin/cat/category
+
+{
+  "name": "Eletffrhhjjla",
+  "description": "Category for all electronic items",
+  "categoryImagePath": "http://192.168.1.202:5000/images/Consumables.png",
+  "subCategoryId": "673af28f148250761b138fde",
+  "supplierId": "673c77b1166e527d1f44c375"
+}
+========================ADD BANNER==================
+POST----http://localhost:5000/api/admin/banner
+
+
+public--->       http://65.2.0.34:5000/api/home/banner
+
+
+{
+  "bannerImage": "http://192.168.1.202:5000/images/bannerImage/LaptopImage.png",
+  "categoryId": "673ee2c8c50a2481986b0ea2",  // Category ID
+  "supplierId": "673c77b1166e527d1f44c375"   // Supplier ID
+}
+
+GET-- http://localhost:5000/api/admin/banner
+
+
+
+
+======1========GLOBALY SEARCH NEW=========================
+
+GET--- http://localhost:5000/api/search?q=FIRE
+
+======2======PRODUCTS SEARCH BY NAME IN PRODUCTS TABLE============
+
+GET ALL PRODUCTS-->http://localhost:5000/api/products   for all products
+
+SEARCH BY NAME---------> http://localhost:5000/api/products/search/q?q=tape&page=1&limit=10
+
+=======3=====PRODUCTS SEARCH BY ITEMCODE IN PRODUCTS TABLE============
+
+http://localhost:5000/api/products/search/q?q=3M983-7112
+
+
+=======4========CATEGORY SEARCH BY NAME IN CATEGORY TABLE============
+
+http://localhost:5000/api/category/search?q=tape
+
+========5=======SUPPLIER SEARCH BY NAME IN SUPPLIER TABLE============
+
+http://localhost:5000/api/suppliers/search/q?q=abc
+
+
+---------------------------------------------------------------------------------------------
+===========ADD BANNER
+
+POST/GET ----localhost:5000/api/admin/banner
+
+
+{
+  "bannerImage": "http://192.168.1.202:5000/images/bannerImage/LaptopImage.png",
+  "categoryId": "673ee2c8c50a2481986b0ea2",  // Category ID
+  "supplierId": "673c77b1166e527d1f44c375"   // Supplier ID
+}
+--------------------------------
+
+1] globalSearch                    http://localhost:5000/api/admin/search?q=rame
+--------------------------------                             
+1] globalSearch                    http://localhost:5000/apii/search?q=FIRE
+2] getProductsByProductName        http://localhost:5000/apii/products/search?q=tape
+3] getProductsByItemCode           http://localhost:5000/apii/itemcode/search?q=3m
+4] getProductsByCategoryName       http://localhost:5000/apii/category/search?q=Tapes
+5] getProductsBySupplierName       http://localhost:5000/apii/suppliers/search?q=big
+
+----------------------------------
+GET ALL CATEGORY LIST WITH NAME AND IMAGEPATH   with pagination
+http://localhost:5000/api/admin/cat/category
+
+GET SUPPLIER WITH logo  (ONLY DISPLAY COMPANY NAME,COMPANY TYPE AND LOGO)
+http://localhost:5000/api/admin/suppliers/name/logo
+---------------------------------
+
+
+
+
+1] globalSearch                    http://65.2.0.34:5000/apii/search?q=FIRE
+2] getProductsByProductName        http://65.2.0.34:5000/apii/products/search?q=tape
+3] getProductsByItemCode           http://65.2.0.34:5000/apii/itemcode/search?q=3m
+4] getProductsByCategoryName       http://65.2.0.34:5000/apii/category/search?q=Tapes
+5] getProductsBySupplierName       http://65.2.0.34:5000/apii/suppliers/search?q=big
+6] getProductsBySubCategoryName    http://65.2.0.34:5000/apii/subcategory/search?q=extech
