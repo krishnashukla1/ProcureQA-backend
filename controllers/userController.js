@@ -84,7 +84,9 @@ const signup = async (req, res) => {
 
 
         // Send response with success message and token
-        res.status(201).json({
+        res.status(200).json({
+            code: 200,
+            error: false,
             message: `${email} successfully added.`,
             token,
             createdAt: user.createdAt.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
@@ -94,14 +96,72 @@ const signup = async (req, res) => {
         console.log('Signup successful, user added to database');
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            code: 500,
+            error: true,
+            message: 'Server error' 
+        
+        });
     }
 };
 
 
+// const getUsers = async (req, res) => {
+//     try {
+//         const { email, sortBy, page = 1, perPage = 100 } = req.query;
+
+//         // Build the filter object based on query parameters
+//         const filter = {};
+//         if (email) {
+//             // Using regex for case-insensitive email search
+//             filter.email = { $regex: email, $options: 'i' };
+//         }
+
+//         // Define sorting options
+//         let sortOptions = {};
+//         if (sortBy) {
+//             const [field, order] = sortBy.split(':');
+//             sortOptions[field] = order === 'desc' ? -1 : 1;
+//         }
+
+//         // Calculate the skip value based on page and perPage
+//         const skip = (page - 1) * perPage;
+
+//         // Fetch users from the database with filtering, sorting, and pagination
+//         const users = await User.find(filter, '-password')
+//             .sort(sortOptions)
+//             .skip(skip) // Skip records based on the current page
+//             .limit(parseInt(perPage)); // Limit the number of records based on perPage
+
+//         // Fetch the total count of users matching the filter
+//         const totalUsers = await User.countDocuments(filter);
+
+//         // Calculate total pages
+//         const totalPages = Math.ceil(totalUsers / perPage);
+
+//         // Check if users are found
+//         if (!users || users.length === 0) {
+//             return res.status(404).json({ message: 'No users found' });
+//         }
+
+//         // Send response with users data and pagination info
+//         res.status(200).json({
+//             users,
+//             totalUsers,
+//             totalPages,
+//             currentPage: parseInt(page),
+//             perPage: parseInt(perPage)
+//         });
+//     } catch (error) {
+//         console.error('Error fetching users:', error);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// };
+
+
 const getUsers = async (req, res) => {
     try {
-        const { email, sortBy, page = 1, perPage = 100 } = req.query;
+        const { email, sortBy, page = 1, perPage = 10 } = req.query;
 
         // Build the filter object based on query parameters
         const filter = {};
@@ -118,13 +178,13 @@ const getUsers = async (req, res) => {
         }
 
         // Calculate the skip value based on page and perPage
-        const skip = (page - 1) * perPage;
+        const skip = (parseInt(page, 10) - 1) * parseInt(perPage, 10);
 
         // Fetch users from the database with filtering, sorting, and pagination
         const users = await User.find(filter, '-password')
             .sort(sortOptions)
             .skip(skip) // Skip records based on the current page
-            .limit(parseInt(perPage)); // Limit the number of records based on perPage
+            .limit(parseInt(perPage, 10)); // Limit the number of records based on perPage
 
         // Fetch the total count of users matching the filter
         const totalUsers = await User.countDocuments(filter);
@@ -132,22 +192,34 @@ const getUsers = async (req, res) => {
         // Calculate total pages
         const totalPages = Math.ceil(totalUsers / perPage);
 
-        // Check if users are found
-        if (!users || users.length === 0) {
-            return res.status(404).json({ message: 'No users found' });
-        }
+        // Format the response
+        const response = {
+            code: 200,
+            error: false,
+            message: 'Users fetched successfully',
+            pagination: {
+                totalElements: totalUsers,
+                totalPages,
+                size: parseInt(perPage, 10),
+                pageNo: parseInt(page, 10),
+                numberOfElements: users.length
+            },
+            data: {
+                users
+            }
+        };
 
-        // Send response with users data and pagination info
-        res.status(200).json({
-            users,
-            totalUsers,
-            totalPages,
-            currentPage: parseInt(page),
-            perPage: parseInt(perPage)
-        });
+        // Send response
+        res.status(200).json(response);
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({
+            code: 500,
+            error: true,
+            message: 'Server error',
+            pagination: null,
+            data: null
+        });
     }
 };
 
@@ -292,13 +364,26 @@ const login = async (req, res) => {
         // Check if the user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({
+                
+                code: 400,
+                error: true,
+                message: 'Invalid email or password',
+                data: null
+            });
         }
 
         // Compare the entered password with the stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({
+                code: 400,
+                error: true,
+                message: 'Invalid email or password',
+                data: null
+
+            
+            });
         }
 
         // Generate JWT token
@@ -311,12 +396,32 @@ const login = async (req, res) => {
         const loginTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
         // Send response with success message, token, and login time
-        res.status(200).json({ message: 'Login successful', token, loginTime });
+        res.status(200).json({
+            
+            // message: 'Login successful', token, loginTime });
+
+
+            code: 200,
+            error: false,
+            message: 'Login successful',
+            data: {
+                token,
+                loginTime
+            }
+        });
+
         console.log('Login successful');
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({
+            
+            code: 500,
+            error: true,
+            message: 'Server error',
+            data: null
+        
+        });
     }
 };
 

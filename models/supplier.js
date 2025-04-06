@@ -182,12 +182,19 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const supplierSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: [true, 'Supplier name is required'],
-      minlength: [3, 'Supplier name must be at least 3 characters long'],
+      minlength: [3, 'firstName  must be at least 3 characters long'],
       trim: true,
     },
+
+    lastName: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+
     email: {
       type: String,
       required: [true, 'Email address is required'],
@@ -212,7 +219,7 @@ const supplierSchema = new mongoose.Schema(
       type: String,
       // required: [true, 'Company logo is required'], // companyLogo is now required
       default: 'http://192.168.1.202:5000/images/cmpLogo/cmpLogo.png',
-      
+  
     },
     officeAddress: {
       type: String,

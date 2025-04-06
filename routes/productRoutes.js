@@ -34,5 +34,9 @@ router.get('/category/:category', productController.getProductsByCategory);
 
 // // Route for searching by Subcategory Name
 router.get('/subcategory/:subcategory', productController.getProductsBySubcategory);
+
+
+// router.get('/supplier/:supplierID', productController.getProductsBySupplierId);
+
 module.exports = router;
 

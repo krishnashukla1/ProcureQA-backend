@@ -9,3 +9,4 @@ router.post('/add', addClientHistory);
 router.get('/:clientId', getClientHistory);
 
 module.exports = router;
+

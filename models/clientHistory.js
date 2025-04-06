@@ -16,10 +16,6 @@ const clientHistorySchema = new mongoose.Schema({
 ); 
 
 
-
-
-
-
 // Virtuals to convert UTC to IST for createdAt and updatedAt
 clientHistorySchema.virtual('createdAtIST').get(function () {
     return new Date(this.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -32,8 +28,6 @@ clientHistorySchema.virtual('createdAtIST').get(function () {
   // Include virtuals when converting to JSON
   clientHistorySchema.set('toJSON', { virtuals: true });
   clientHistorySchema.set('toObject', { virtuals: true });
-
-
 
 
 

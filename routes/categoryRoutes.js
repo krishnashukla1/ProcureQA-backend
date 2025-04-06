@@ -22,7 +22,6 @@ router.delete('/categories/:Id', deleteCategory);
 router.post('/category', createCategory);
 
 
-
 // router.post('/category', upload.single('categoryImagePath'), createCategory);  //WHEN NEED CATEGORYIMAGEPATH UPLOAD BY FORM-DATA THEN UNCOMMENT THIS LINE
 
 

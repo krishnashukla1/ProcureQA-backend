@@ -4,12 +4,126 @@ const Category = require('../models/category');
 const SubCategory = require('../models/subCategory');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+require('dotenv').config(); 
+const BASE_URL = process.env.BASE_URL; 
+
+
+
+// exports.getAllSuppliers = async (req, res) => {
+//   try {
+//     // Get the page and limit from query parameters, with defaults
+//     const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+//     const limit = parseInt(req.query.limit) || 5; // Default to 10 items per page if not specified
+
+//     // Calculate the starting index for the query
+//     const skip = (page - 1) * limit;
+
+//     // Fetch suppliers with pagination
+//     const suppliers = await Supplier.find()
+//       .skip(skip)
+//       .limit(limit);
+
+//     // Transform the response to remove the extra `id`
+//     const result = suppliers.map(supplier => ({
+//       id: supplier._id,
+//       name: supplier.name,
+//       officeAddress: supplier.officeAddress,
+//       contactNumber: supplier.contactNumber,
+//       email: supplier.email,
+//       // productCategories: supplier.productCategories,
+//       // productSubCategories: supplier.productSubCategories,
+//       // products:supplier.products,
+
+//       // createdAt: supplier.createdAt,
+//       // updatedAt: supplier.updatedAt
+
+
+//       createdAt: new Date(supplier.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+//       updatedAt: new Date(supplier.updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+
+//     }));
+
+//     // Get the total number of suppliers for calculating total pages
+//     const totalSuppliers = await Supplier.countDocuments();
+//     const totalPages = Math.ceil(totalSuppliers / limit);
+
+//     // Return paginated results along with pagination info
+//     res.status(200).json({
+//       currentPage: page,
+//       totalPages: totalPages,
+//       totalSuppliers: totalSuppliers,
+//       suppliers: result
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error fetching suppliers' });
+//   }
+// };
+
+
+// exports.getAllSuppliers = async (req, res) => {
+//   try {
+//     // Get the page and limit from query parameters, with defaults
+//     const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not specified
+//     const limit = parseInt(req.query.limit, 10) || 5; // Default to 5 items per page if not specified
+
+//     // Calculate the starting index for the query
+//     const skip = (page - 1) * limit;
+
+//     // Fetch suppliers with pagination
+//     const suppliers = await Supplier.find()
+//       .skip(skip)
+//       .limit(limit);
+
+//     // Transform the response to remove the extra `id`
+//     const result = suppliers.map(supplier => ({
+//       id: supplier._id,
+//       firstName: supplier.firstName,
+//       lastName: supplier.lastName,
+
+//       officeAddress: supplier.officeAddress,
+//       contactNumber: supplier.contactNumber,
+//       email: supplier.email,
+//       createdAt: new Date(supplier.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+//       updatedAt: new Date(supplier.updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+//     }));
+
+//     // Get the total number of suppliers for calculating total pages
+//     const totalSuppliers = await Supplier.countDocuments();
+//     const totalPages = Math.ceil(totalSuppliers / limit);
+
+//     // Return paginated results along with pagination info
+//     res.status(200).json({
+//       code: 200,
+//       error: false,
+//       message: 'Suppliers fetched successfully',
+//       pagination: {
+//         totalElements: totalSuppliers,
+//         totalPages: totalPages,
+//         size: limit,
+//         pageNo: page,
+//         numberOfElements: suppliers.length
+//       },
+//       data: {
+//         suppliers: result
+//       }
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       code: 500,
+//       error: true,
+//       message: 'Error fetching suppliers',
+//       pagination: null,
+//       data: null
+//     });
+//   }
+// };
 
 exports.getAllSuppliers = async (req, res) => {
   try {
     // Get the page and limit from query parameters, with defaults
-    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
-    const limit = parseInt(req.query.limit) || 5; // Default to 10 items per page if not specified
+    const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit, 10) || 10; // Default to 10 items per page if not specified
 
     // Calculate the starting index for the query
     const skip = (page - 1) * limit;
@@ -19,24 +133,22 @@ exports.getAllSuppliers = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
+    // Log the result to see what data is being fetched
+    console.log(suppliers);
+
     // Transform the response to remove the extra `id`
     const result = suppliers.map(supplier => ({
       id: supplier._id,
-      name: supplier.name,
-      officeAddress: supplier.officeAddress,
-      contactNumber: supplier.contactNumber,
-      email: supplier.email,
-      // productCategories: supplier.productCategories,
-      // productSubCategories: supplier.productSubCategories,
-      // products:supplier.products,
-
-      // createdAt: supplier.createdAt,
-      // updatedAt: supplier.updatedAt
-
-
+      firstName: supplier.firstName || 'N/A', // Default value if missing
+      lastName: supplier.lastName || 'N/A',   // Default value if missing
+      companyName: supplier.companyName,        // Ensure this field is included
+      companyType: supplier.companyType,        // Ensure this field is included
+      companyLogo: supplier.companyLogo,        // Ensure this field is included
+      officeAddress: supplier.officeAddress || 'Not available',
+      contactNumber: supplier.contactNumber || 'Not available',
+      email: supplier.email || 'Not available',
       createdAt: new Date(supplier.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
       updatedAt: new Date(supplier.updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-
     }));
 
     // Get the total number of suppliers for calculating total pages
@@ -45,13 +157,28 @@ exports.getAllSuppliers = async (req, res) => {
 
     // Return paginated results along with pagination info
     res.status(200).json({
-      currentPage: page,
-      totalPages: totalPages,
-      totalSuppliers: totalSuppliers,
-      suppliers: result
+      code: 200,
+      error: false,
+      message: 'Suppliers fetched successfully',
+      pagination: {
+        totalElements: totalSuppliers,
+        totalPages: totalPages,
+        size: limit,
+        pageNo: page,
+        numberOfElements: suppliers.length
+      },
+      data: {
+        suppliers: result
+      }
     });
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching suppliers' });
+    res.status(500).json({
+      code: 500,
+      error: true,
+      message: 'Error fetching suppliers',
+      pagination: null,
+      data: null
+    });
   }
 };
 
@@ -370,16 +497,23 @@ exports.getSuppliersByName = async (req, res) => {
 
 
 
-
+// Ensure the "uploads" folder exists
+const ensureDirectoryExists = (directory) => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+};
 
 // Configure storage for uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Directory to store uploaded files
+    const uploadPath = 'uploads/';
+    ensureDirectoryExists(uploadPath);  // Ensure directory exists before saving files
+    cb(null, uploadPath);  // Set the destination for file storage
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Unique file name with original extension
+    cb(null, uniqueSuffix + path.extname(file.originalname));  // Generate unique file name
   }
 });
 
@@ -390,9 +524,9 @@ const fileFilter = (req, file, cb) => {
   const mimetype = allowedFileTypes.test(file.mimetype);
 
   if (extname && mimetype) {
-    cb(null, true);
+    cb(null, true);  // Allow the file
   } else {
-    cb(new Error('Only images are allowed'));
+    cb(new Error('Only images are allowed'));  // Reject the file
   }
 };
 
@@ -400,63 +534,73 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB size limit
+  limits: { fileSize: 5 * 1024 * 1024 }  // 5 MB size limit
 });
-
-
-const BASE_URL = "http://65.2.0.34:5000"; // AWS server URL
 
 exports.insertSupplier = async (req, res) => {
   try {
+    // Handle file upload
     upload.single('companyLogo')(req, res, async (err) => {
       if (err) {
         return res.status(400).json({ message: err.message });
       }
 
       const {
-        name,
+        firstName,
+        lastName,
         email,
         companyName,
         companyType,
         officeAddress,
         contactNumber,
-        productCategories,
-        productSubCategories,
-        products
+        // productCategories,
+        // productSubCategories,
+        // products
       } = req.body;
 
-      if (!name || !email || !companyName || !companyType || !req.file || !officeAddress || !contactNumber) {
+      // Check for all required fields
+      if (!firstName || !email || !companyName || !req.file || !contactNumber) {
         return res.status(400).json({ message: 'All required fields must be provided' });
       }
 
+      // Validate contact number format
       const contactNumberRegex = /^\d{3} \d{8}$/;
       if (contactNumber && !contactNumberRegex.test(contactNumber)) {
         return res.status(400).json({ message: 'Contact number must be in the format: XXX XXXXXXXXX' });
       }
 
+      // Create a new supplier object
       const newSupplier = new Supplier({
-        name,
+        firstName,
+        lastName: lastName ? lastName : " ",
         email,
         companyName,
         companyType,
-        companyLogo: `${BASE_URL}/${req.file.path.replace(/\\/g, '/')}`, // Append base URL and replace backslashes
+        companyLogo: `${BASE_URL}/${req.file.path.replace(/\\/g, '/')}`,  // Append base URL to the file path
         officeAddress,
         contactNumber,
-        productCategories,
-        productSubCategories,
-        products
+        // productCategories,
+        // productSubCategories,
+        // products
       });
 
+      // Save the supplier to the database
       const savedSupplier = await newSupplier.save();
 
-      res.status(201).json({ message: "Supplier created successfully", supplier: savedSupplier });
+      // Return success response
+      res.status(201).json({
+        message: "Supplier created successfully",
+        supplier: savedSupplier
+      });
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error creating supplier', error: error.message });
+    res.status(500).json({
+      message: 'Error creating supplier',
+      error: error.message
+    });
   }
 };
-
 
 
 

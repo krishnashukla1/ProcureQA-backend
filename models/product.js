@@ -58,7 +58,7 @@ const productSchema = new mongoose.Schema({
   name: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Supplier',
-    required: true,
+    required: false,
   },
 
   // createdAt: {

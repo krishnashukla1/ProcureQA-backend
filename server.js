@@ -24,9 +24,11 @@ app.use('/api/category', require('./routes/categoryRoutes'));
 app.use('/api/suppliers', require('./routes/supplierRoutes'));
 
 
-// app.use('/api/admin', require('./routes/searchRoutes'));
+// app.use('/api/admin', require('./routes/search2Routes'));
 
-app.use('/api', require('./routes/search2Routes'));
+app.use('/apii', require('./routes/search2Routes'));
+// app.use('/api', require('./routes/search2Routes'));
+
 // http://localhost:5000/apii/itemcode/search?q=3m
 
 
@@ -37,12 +39,18 @@ app.use('/api/admin/clientHistory', require('./routes/clientHistoryRoutes'))
 app.use('/api/home', require('./routes/bannerRoutes'))
 
 
+
 // Serve static files from the 'images' folder
 
 // console.log('Static files served from:', path.join(__dirname, 'images'));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/images', express.static(path.join(__dirname, 'images', 'cmpLogos')));
-app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static(path.join(__dirname, 'images', 'bannerImage')));
+
+// app.use('/uploads', express.static('uploads'));
+
+app.use('/images', express.static('images'));
+
 
 
 

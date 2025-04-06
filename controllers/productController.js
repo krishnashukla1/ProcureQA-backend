@@ -188,34 +188,121 @@ exports.uploadBulkProducts = async (req, res) => {
 
 
 
+// exports.createProduct = async (req, res) => {
+//     const {
+//         ProductName, ItemCode, Unit, Description,
+//         Category, SubCategory, supplierId
+//     } = req.body;
+//     console.log("body data--",req.body);
+    
+//     try {
+//         // console.log(supplierId); // Log supplierId to check if it's passed correctly
+
+//         // Find the supplier by its ObjectId (supplierId)
+//         const supplier = await Supplier.findById(supplierId);
+//         if (!supplier) {
+//             return res.status(404).json({ message: 'Supplier not found' });
+//         }
+
+//         // Validate Category and SubCategory objects
+//         console.log(Category, SubCategory); // Log Category and SubCategory for debugging
+//         if (!Category || !Category.CategoryID || !Category.CategoryName ||
+//             !SubCategory || !SubCategory.SubCategoryID || !SubCategory.SubCategoryName) {
+//             return res.status(400).json({ message: 'Category and SubCategory are required with valid IDs and names' });
+//         }
+// console.log("-------before save-----");
+
+//         // Create new product
+//         const newProduct = new Product({
+//             ProductName,
+//             ItemCode,
+//             Unit,
+//             Description,
+//             Category: {
+//                 CategoryID: Category.CategoryID,
+//                 CategoryName: Category.CategoryName,
+//             },
+//             SubCategory: {
+//                 SubCategoryID: SubCategory.SubCategoryID,
+//                 SubCategoryName: SubCategory.SubCategoryName,
+//                 CategoryID: SubCategory.CategoryID,
+//             },
+//             supplierId: supplier._id, // Use the supplier's ObjectId passed from the request
+//         });
+
+//         console.log(newProduct); // Log the newProduct object before saving
+
+//         // Save the new product to the database
+//         await newProduct.save();
+
+//         // Respond with success message and the created product
+//         res.status(201).json({ message: 'Product created successfully', product: newProduct });
+//     } catch (error) {
+//         console.error(error); // Log the error for debugging
+//         res.status(500).json({ message: 'Error creating product', error: error.message });
+//     }
+// };
+
+
+//------------------------------------------------
+
 exports.createProduct = async (req, res) => {
     const {
-        ProductName, ItemCode, Unit, Description,
-        Category, SubCategory, supplierId
+        ProductName, 
+        ItemCode, 
+        Unit, 
+        Description,
+        Category, 
+        SubCategory, 
+        supplierId
     } = req.body;
 
     try {
-        console.log(supplierId); // Log supplierId to check if it's passed correctly
+        console.log("Request body data:", req.body); // Log request data for debugging
 
-        // Find the supplier by its ObjectId (supplierId)
+        // Validate mandatory fields
+        if (!ProductName || !ItemCode || !Unit || !supplierId) {
+            return res.status(400).json({ 
+                message: 'ProductName, ItemCode, Unit, and supplierId are required fields.' 
+            });
+        }
+
+        // Check if supplier exists
         const supplier = await Supplier.findById(supplierId);
         if (!supplier) {
-            return res.status(404).json({ message: 'Supplier not found' });
+            return res.status(404).json({ message: 'Supplier not found.' });
         }
 
-        // Validate Category and SubCategory objects
-        console.log(Category, SubCategory); // Log Category and SubCategory for debugging
-        if (!Category || !Category.CategoryID || !Category.CategoryName ||
-            !SubCategory || !SubCategory.SubCategoryID || !SubCategory.SubCategoryName) {
-            return res.status(400).json({ message: 'Category and SubCategory are required with valid IDs and names' });
+        // Validate Category and SubCategory
+        if (
+            !Category || 
+            !Category.CategoryID || 
+            !Category.CategoryName || 
+            !SubCategory || 
+            !SubCategory.SubCategoryID || 
+            !SubCategory.SubCategoryName
+        ) {
+            return res.status(400).json({ 
+                message: 'Valid Category and SubCategory are required.' 
+            });
         }
 
-        // Create new product
+        // console.log("Category and SubCategory:", Category, SubCategory);
+
+        // Check for duplicate ItemCode in the database
+        const existingProduct = await Product.findOne({ ItemCode });
+        if (existingProduct) {
+            return res.status(400).json({ 
+                message: `Product with ItemCode "${ItemCode}" already exists.` 
+            });
+        }
+
+        // Create the new product
         const newProduct = new Product({
             ProductName,
             ItemCode,
             Unit,
-            Description,
+            Description: Description || null, // Allow optional description
             Category: {
                 CategoryID: Category.CategoryID,
                 CategoryName: Category.CategoryName,
@@ -225,27 +312,75 @@ exports.createProduct = async (req, res) => {
                 SubCategoryName: SubCategory.SubCategoryName,
                 CategoryID: SubCategory.CategoryID,
             },
-            supplierId: supplier._id, // Use the supplier's ObjectId passed from the request
+            supplierId: supplier._id
+            // name: supplier.companyName // Link supplier's ObjectId
         });
 
-        console.log(newProduct); // Log the newProduct object before saving
+        // console.log("New Product to save:", newProduct);
 
-        // Save the new product to the database
+        // Save the product to the database
         await newProduct.save();
 
-        // Respond with success message and the created product
-        res.status(201).json({ message: 'Product created successfully', product: newProduct });
+        // Return success response with the saved product details
+        res.status(201).json({ 
+            message: 'Product created successfully.', 
+            product: newProduct 
+        });
+
     } catch (error) {
-        console.error(error); // Log the error for debugging
-        res.status(500).json({ message: 'Error creating product', error: error.message });
+        console.error('Error creating product:', error.message);
+        res.status(500).json({ 
+            message: 'Error creating product.', 
+            error: error.message 
+        });
     }
 };
+
+//------------------------------------------------
+
+
+
+// exports.getProducts = async (req, res) => {
+//     try {
+//         // Extract and validate pagination parameters from the query
+//         const page = parseInt(req.query.page) || 1;
+//         const limit = parseInt(req.query.limit) || 10;
+
+//         // Calculate skip value for pagination
+//         const skip = (page - 1) * limit;
+
+//         // Fetch products based on pagination
+//         const products = await Product.find().skip(skip).limit(limit);
+
+//         // Get total product count
+//         const totalCount = await Product.countDocuments();
+
+//         // Calculate total number of pages
+//         const totalPages = Math.ceil(totalCount / limit);
+
+//         // Respond with paginated data
+//         res.status(200).json({
+//             currentPage: page,
+//             totalPages: totalPages,
+//             totalProducts: totalCount,
+//             products: products
+//         });
+//     } catch (error) {
+//         console.error("Error fetching products:", error);
+//         res.status(500).json({ message: 'Error fetching products', error: error.message });
+//     }
+// };
+
+
+
+// API to get a product by ID
+
 
 exports.getProducts = async (req, res) => {
     try {
         // Extract and validate pagination parameters from the query
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
 
         // Calculate skip value for pagination
         const skip = (page - 1) * limit;
@@ -261,20 +396,35 @@ exports.getProducts = async (req, res) => {
 
         // Respond with paginated data
         res.status(200).json({
-            currentPage: page,
-            totalPages: totalPages,
-            totalProducts: totalCount,
-            products: products
+            code: 200,
+            error: false,
+            message: 'Products fetched successfully',
+            pagination: {
+                totalElements: totalCount,
+                totalPages: totalPages,
+                size: limit,
+                pageNo: page,
+                numberOfElements: products.length
+            },
+            data: {
+                products: products
+            }
         });
     } catch (error) {
-        console.error("Error fetching products:", error);
-        res.status(500).json({ message: 'Error fetching products', error: error.message });
+        console.error('Error fetching products:', error);
+        res.status(500).json({
+            code: 500,
+            error: true,
+            message: 'Error fetching products',
+            pagination: null,
+            data: null
+        });
     }
 };
 
 
 
-// API to get a product by ID
+
 exports.getProductById = async (req, res) => {
     const { id } = req.params;  // Product ID from the URL params
 
@@ -737,5 +887,59 @@ exports.getProductsBySubcategory = async (req, res) => {
     }
 };
 
+
+
+// exports.getProductsBySupplierId = async (req, res) => {
+//     const { supllierId } = req.params;
+
+//     try {
+//         console.log();
+        
+//         const supllierIdRegex = new RegExp(supllierId, 'i'); // Case-insensitive search
+//         const page = parseInt(req.query.page) || 1;
+//         const limit = parseInt(req.query.limit) || 10;
+//         const skip = (page - 1) * limit;
+
+//         // Fetch products by SubCategoryName with pagination
+//         const products = await Product.find({
+//             'supplierId': { $regex: supllierIdRegex }
+//         })
+//             .skip(skip)
+//             .limit(limit)
+//             .select('ProductName ItemCode Category SubCategory Unit supplierId createdAt updatedAt');
+
+//         if (products.length === 0) {
+//             return res.status(404).json({ message: 'No products found for the supplierId' });
+//         }
+
+//         // Get total count for pagination
+//         const totalCount = await Product.countDocuments({
+//             'supplierId': { $regex: supllierIdRegex }
+//         });
+//         const totalPages = Math.ceil(totalCount / limit);
+
+//         // Map the products for better formatting
+//         const result = products.map(product => ({
+//             id: product._id,
+//             ProductName: product.ProductName,
+//             ItemCode: product.ItemCode,
+//             Category: product.Category,
+//             SubCategory: product.SubCategory,
+//             Unit: product.Unit,
+//             supplierId: product.supplierId,
+//             createdAt: new Date(product.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+//             updatedAt: new Date(product.updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+//         }));
+
+//         res.status(200).json({
+//             currentPage: page,
+//             totalPages,
+//             totalProducts: totalCount,
+//             products: result
+//         });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error fetching products by subcategory', error: error.message });
+//     }
+// };
 
 

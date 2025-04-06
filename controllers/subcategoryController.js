@@ -116,24 +116,87 @@ const updateSubcategory = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+// const getAllSubcategories = async (req, res) => {
+//     try {
+//         // Fetch all subcategories from the database
+//         const subcategories = await SubCategory.find();
+
+//         // If no subcategories exist, return an empty array
+//         if (subcategories.length === 0) {
+//             return res.status(200).json({ message: 'No subcategories found' });
+//         }
+
+//         // Return the list of subcategories
+//         res.status(200).json(subcategories);
+//     } catch (error) {
+//         console.error('Error fetching subcategories:', error);
+//         res.status(500).json({ error: 'Failed to retrieve subcategories' });
+//     }
+// };
+
 const getAllSubcategories = async (req, res) => {
     try {
-        // Fetch all subcategories from the database
-        const subcategories = await SubCategory.find();
-
-        // If no subcategories exist, return an empty array
-        if (subcategories.length === 0) {
-            return res.status(200).json({ message: 'No subcategories found' });
+      // Get pagination parameters from query, with defaults
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 10;
+  
+      // Calculate skip value for pagination
+      const skip = (page - 1) * limit;
+  
+      // Fetch subcategories with pagination
+      const subcategories = await SubCategory.find()
+        .skip(skip) // Skip records for pagination
+        .limit(limit); // Limit the number of records per page
+  
+      // Get the total number of subcategories to calculate total pages
+      const totalSubcategories = await SubCategory.countDocuments();
+      const totalPages = Math.ceil(totalSubcategories / limit);
+  
+      // If no subcategories exist
+      if (subcategories.length === 0) {
+        return res.status(200).json({
+          code: 200,
+          error: false,
+          message: 'No subcategories found',
+          pagination: {
+            totalElements: totalSubcategories,
+            totalPages: totalPages,
+            size: limit,
+            pageNo: page,
+            numberOfElements: subcategories.length
+          },
+          data: []
+        });
+      }
+  
+      // Return paginated response
+      res.status(200).json({
+        code: 200,
+        error: false,
+        message: 'Subcategories fetched successfully',
+        pagination: {
+          totalElements: totalSubcategories,
+          totalPages: totalPages,
+          size: limit,
+          pageNo: page,
+          numberOfElements: subcategories.length
+        },
+        data: {
+          subcategories
         }
-
-        // Return the list of subcategories
-        res.status(200).json(subcategories);
+      });
     } catch (error) {
-        console.error('Error fetching subcategories:', error);
-        res.status(500).json({ error: 'Failed to retrieve subcategories' });
+      console.error('Error fetching subcategories:', error);
+      res.status(500).json({
+        code: 500,
+        error: true,
+        message: 'Failed to retrieve subcategories',
+        pagination: null,
+        data: null
+      });
     }
-};
-
+  };
+  
 
 
 
